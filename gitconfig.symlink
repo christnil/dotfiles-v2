@@ -1,0 +1,25 @@
+[color]
+  ui = true
+[alias]
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(bold yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+  co = checkout
+  ci = commit
+  st = status
+  br = branch
+  type = cat-file -t
+  dump = cat-file -p
+  wtf = reset head --hard
+  unstage = reset head
+  sync = pull --rebase origin master
+
+[merge]
+  tool = p4merge
+[mergetool "p4merge"]
+  cmd = p4merge.exe \"$BASE\" \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
+[diff]
+  tool = p4merge
+  guitool = p4merge
+[difftool "p4merge"]
+  cmd = p4merge.exe \"$LOCAL\" \"$REMOTE\"
+[credential]
+  helper = wincred
