@@ -23,3 +23,8 @@
   cmd = p4merge.exe \"$LOCAL\" \"$REMOTE\"
 [credential]
   helper = wincred
+[user]
+  name = Christoffer Nilsson
+  email = christoffer.nilsson@thomascook.se
+[push]
+  default = current
