@@ -1,0 +1,188 @@
+﻿'.source.js':
+  'if':
+    'prefix': 'if'
+    'body': 'if (${1:true}) {\n\t$2\n}'
+  'if … else':
+    'prefix': 'ife'
+    'body': 'if (${1:true}) {\n\t$2\n} else {\n\t$3\n}'
+  'else':
+    'prefix': 'else'
+    'body': 'else {\n\t$1\n}'
+  'else if':
+    'prefix': 'eif'
+    'body': 'else if (${1:true}) {\n\t$2\n}'
+  'for':
+    'prefix' : 'for'
+    'body' : 'for (let ${2:i} = 0; ${2:i} < ${1:array}.length; ${2:i}++) {\n\t${1:array}[${2:i}]$3\n}'
+  'Function':
+    'prefix': 'fun'
+    'body': 'function ${1:functionName}($2) {\n\t$0\n}'
+  'Anonymous Function':
+    'prefix': 'afun'
+    'body': 'function ($1) {\n\t$2\n}'
+  'Anonymous Function':
+    'prefix': 'f'
+    'body': '($1) => {\n\t$2\n}'
+  'Generator':
+    'prefix': 'gen',
+    'body': 'function* ${1:functionName}($2) {\n\t$0\n}'
+  'Anonymous Generator':
+    'prefix': 'g'
+    'body': 'function* ($1) {\n\t$2\n}'
+  'log':
+    'prefix': 'log'
+    'body': 'console.log($1);$0'
+  'warn':
+    'prefix': 'warn'
+    'body': 'logger.warn(\'$1\');$0'
+  'error':
+    'prefix': 'error'
+    'body': 'logger.error(\'$1\', { error });$0'
+  'inspect':
+    'prefix': 'inspect'
+    'body': 'console.log(require(\'util\').inspect($0, { depth: null }));'
+  'new Promise':
+    'prefix': 'prom'
+    'body': 'new Promise((resolve, reject) => {\n\t$1\n});$0'
+  'setInterval function':
+    'prefix': 'interval'
+    'body': 'setInterval(${2:() => {\n\t$3\n\\}}, ${1:10});'
+  'setTimeout function':
+    'prefix': 'timeout'
+    'body': 'setTimeout(${2:() => {\n\t$3\n\\}}, ${1:10});'
+  'switch':
+    'prefix': 'switch'
+    'body': 'switch (${1:expression}) {\n\tcase ${2:expression}:\n\t\t$4\n\t\tbreak;$5\n\tdefault:\n\t\t$3\n}'
+  'case':
+    'prefix': 'case'
+    'body': 'case ${1:expression}:\n\t$2\n\tbreak;'
+  'try':
+    'prefix': 'try'
+    'body': 'try {\n\t$1\n} catch (${2:e}) {\n\t$3\n}${4: finally {\n\t$5\n\\}}'
+  'PropTypes shape':
+    'prefix': 'psh'
+    'body': 'PropTypes.shape({\n\t$1\n}).isRequired,$0'
+  'PropTypes arrayOf':
+    'prefix': 'pao'
+    'body': 'PropTypes.arrayOf(PropTypes.shape({\n\t$1\n})),$0'
+  'PropTypes string':
+    'prefix': 'ps'
+    'body': 'PropTypes.string,'
+  'PropTypes string required':
+    'prefix': 'psr'
+    'body': 'PropTypes.string.isRequired,'
+  'PropTypes number':
+    'prefix': 'pn'
+    'body': 'PropTypes.number,'
+  'PropTypes number required':
+    'prefix': 'pnr'
+    'body': 'PropTypes.number.isRequired,'
+  'PropTypes bool':
+    'prefix': 'pb'
+    'body': 'PropTypes.bool,'
+  'PropTypes bool required':
+    'prefix': 'pbr'
+    'body': 'PropTypes.bool.isRequired,'
+  'PropTypes function':
+    'prefix': 'pf'
+    'body': 'PropTypes.func,'
+  'PropTypes function required':
+    'prefix': 'pfr'
+    'body': 'PropTypes.func.isRequired,'
+  'RR Container Component':
+    'prefix': 'cont'
+    'body': '''
+      import React, { PropTypes } from 'react';
+      import { connect } from 'react-redux';
+      import { bindActionCreators } from 'redux';
+
+      class $1 extends React.Component {
+        constructor(props, context) {
+          super(props, context);
+        }
+
+        render() {
+          return (
+          );
+        }
+      }
+
+      $1.propTypes = {
+        //myProp: PropTypes.object.isRequired
+      };
+
+      function mapStateToProps(state, ownProps) {
+        return {
+          state: state
+        };
+      }
+
+      function mapDispatchToProps(dispatch) {
+        return {
+          //actions: bindActionCreators(courseActions, dispatch)
+        };
+      }
+
+      export default connect(mapStateToProps, mapDispatchToProps)($1);
+
+'''
+
+  'React Component':
+    'prefix': 'comp'
+    'body': '''
+      import React, { PropTypes } from 'react';
+
+      const $1 = ({ $2 }) => {
+        return (
+          $3
+        );
+      };
+
+      $1.propTypes = {
+        //myProp: PropTypes.string.isRequired
+      };
+
+      export default $1;
+
+'''
+
+  'React Class Component':
+    'prefix': 'scomp'
+    'body': '''
+      import React, { PropTypes } from 'react';
+
+      class $1 extends React.Component {
+        constructor(props, context) {
+          super(props, context);
+        }
+
+        componentDidMount() {
+        }
+
+        componentWillUnmount() {
+        }
+
+        render() {
+          return (
+            <h1>So what??...</h1>
+          );
+        }
+      }
+
+      $1.propTypes = {
+        //myProp: PropTypes.object.isRequired
+      };
+
+      export default $1;
+
+'''
+
+  'React Constructor':
+    'prefix': 'rcon'
+    'body': '''
+      constructor(props, context) {
+        super(props, conetxt);
+        $1
+      }
+
+'''
