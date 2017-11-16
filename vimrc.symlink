@@ -233,6 +233,10 @@ let g:syntastic_enable_highlighting=0
 map <C-n> :cn<CR>
 map <C-p> :cp<CR>
 
+" commandT
+map <C-t> :CommandT<CR>
+let g:CommandTFileScanner = 'git'
+
 " Easy navigation between splits. Instead of ctrl-w + j. Just ctrl-j
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
