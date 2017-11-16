@@ -57,11 +57,12 @@ filetype plugin indent on    " required
 
 " SHORT COMMANDS
 " NERDTree toggle
+" Toggle nerdtree with F10 and leader a
 map <C-a> :NERDTreeToggle<CR>
-" Toggle nerdtree with F10
 map <F10> :NERDTreeToggle<CR>
-" Current file in nerdtree
+" Current file in nerdtree with F9 and leader q-s
 map <F9> :NERDTreeFind<CR>
+map <C-q><C-s> :NERDTreeFind<CR>
 
 " Autostart nerdtree if no file selected
 autocmd StdinReadPre * let s:std_in=1
@@ -80,6 +81,8 @@ map <Leader>q :qall<CR>
 map <Leader>gs :Gstatus<CR>
 map <Leader>gc :Gcommit<CR>
 map <Leader>gp :Gpush<CR>
+map <Leader>n :NERDTreeToggle<CR>
+map <Leader>s :NERDTreeFind<CR>
 
 
 " highlight vertical column of cursor
@@ -224,10 +227,6 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
-
-" configure syntastic syntax checking to check on open as well as save
-let g:syntastic_ruby_checkers = ['mri']
-let g:syntastic_enable_highlighting=0
 
 " cmd n, cmd p for fwd/backward in search
 map <C-n> :cn<CR>
