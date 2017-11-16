@@ -57,7 +57,7 @@ filetype plugin indent on    " required
 
 " SHORT COMMANDS
 " NERDTree toggle
-" Toggle nerdtree with F10 and leader a
+" Toggle nerdtree with F10 and ctrl a
 map <C-a> :NERDTreeToggle<CR>
 map <F10> :NERDTreeToggle<CR>
 " Current file in nerdtree with F9 and leader q-s
@@ -208,6 +208,7 @@ let g:Tlist_Ctags_Cmd="ctags --exclude='*.js'"
 
 " Switch between the last two files
 nnoremap <leader><leader> <c-^>
+nnoremap <Leader><Leader> <c-^>
 
 " Get off my lawn
 nnoremap <Left> :echoe "Use h"<CR>
