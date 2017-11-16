@@ -235,7 +235,8 @@ map <C-p> :cp<CR>
 
 " commandT
 map <C-t> :CommandT<CR>
-let g:CommandTFileScanner = 'git'
+let g:CommandTFileScanner = 'find'
+let g:CommandTWildIgnore=&wildignore . ",*/node_modules"
 
 " Easy navigation between splits. Instead of ctrl-w + j. Just ctrl-j
 nnoremap <C-J> <C-W><C-J>
