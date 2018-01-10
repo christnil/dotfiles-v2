@@ -8,8 +8,8 @@
   br = branch
   type = cat-file -t
   dump = cat-file -p
-  wtf = reset head --hard
-  unstage = reset head
+  wtf = reset HEAD --hard
+  unstage = reset HEAD
   sync = pull --rebase origin master
 
 [merge]
@@ -28,3 +28,5 @@
   email = christoffer.nilsson@thomascook.se
 [push]
   default = current
+[core]
+	editor = vim
