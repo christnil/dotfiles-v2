@@ -19,6 +19,18 @@ Plug 'othree/yajs.vim'
 " theme
 Plug 'mhartington/oceanic-next'
 
+" replace
+Plug 'tpope/vim-abolish'
+
+" surround change and add surroundings of word
+Plug 'tpope/vim-surround'
+
+" comment stuff
+Plug 'tpope/vim-commentary'
+
+" shortcuts for navigation and encodings
+Plug 'tpope/vim-unimpaired'
+
 call plug#end()
 
 " Fuzzy finder config

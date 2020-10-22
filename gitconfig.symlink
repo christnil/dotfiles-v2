@@ -25,7 +25,7 @@
   helper = wincred
 [user]
   name = Christoffer Nilsson
-  email = christoffer.nilsson@thomascook.se
+  email = christ.nilsson@gmail.com
 [push]
   default = current
 [core]
