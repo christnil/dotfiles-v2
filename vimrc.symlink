@@ -49,7 +49,7 @@ colorscheme OceanicNext
 " SHORT COMMANDS
 " NERDTree toggle
 " Toggle nerdtree with F10 and ctrl a
-map <C-a> :NERDTreeToggle<CR>
+" map <C-a> :NERDTreeToggle<CR>
 map <F10> :NERDTreeToggle<CR>
 " Current file in nerdtree with F9 and leader q-s
 map <F9> :NERDTreeFind<CR>
