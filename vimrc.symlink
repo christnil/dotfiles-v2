@@ -3,7 +3,8 @@ filetype off                  " required
 
 call plug#begin('~/.vim/plugged')
 " fuzzy finder
-Plug '/usr/local/opt/fzf'
+" Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
 " solution explorer
