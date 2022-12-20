@@ -22,9 +22,12 @@ return require("packer").startup(function(use)
     use("hrsh7th/cmp-buffer")
     use("hrsh7th/nvim-cmp")
     use{'tzachar/cmp-tabnine', run='./install.sh', requires = 'hrsh7th/nvim-cmp'}
-    use("onsails/lspkind-nvim")
+	use("onsails/lspkind-nvim")
+    use("nvim-lua/lsp_extensions.nvim")
     use("glepnir/lspsaga.nvim")
     use("simrat39/symbols-outline.nvim")
+    use("L3MON4D3/LuaSnip")
+    use("saadparwaiz1/cmp_luasnip")
 
     -- Primeagen doesn"t create lodash
     use("ThePrimeagen/refactoring.nvim")

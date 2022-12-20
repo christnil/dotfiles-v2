@@ -81,6 +81,7 @@ local function config(_config)
 	return vim.tbl_deep_extend("force", {
 		on_attach = function()
 			nnoremap("gd", function() vim.lsp.buf.definition() end)
+			nnoremap("gD", function() vim.lsp.buf.declaration() end)
 			nnoremap("K", function() vim.lsp.buf.hover() end)
 			nnoremap("<leader>vws", function() vim.lsp.buf.workspace_symbol() end)
 			nnoremap("<leader>vd", function() vim.diagnostic.open_float() end)
