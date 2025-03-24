@@ -4,7 +4,9 @@
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # tmux
-ln -sf "$DOTFILES_DIR/tmux" ~/.config/tmux
+for file in "$DOTFILES_DIR/tmux/"*; do
+  ln -sf "$file" ~/.config/tmux/$(basename "$file")
+done
 ln -sf "$DOTFILES_DIR/tmux/tmux.conf" ~/.tmux.conf
 
 # TPM (Tmux Plugin Manager)
