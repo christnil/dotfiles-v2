@@ -3,6 +3,7 @@
 [alias]
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(bold yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
   co = checkout
+  cor = !git recentbnocolor | fzf --header-lines=1 | awk '{ print $3 }' | xargs git co
   ci = commit
   st = status
   br = branch
@@ -11,22 +12,39 @@
   wtf = reset HEAD --hard
   unstage = reset HEAD
   sync = pull --rebase origin master
-
-[merge]
-  tool = p4merge
-[mergetool "p4merge"]
-  cmd = p4merge.exe \"$BASE\" \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
+  fixup = !git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs -o git commit --fixup
+  reword = !git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs -o -I F git commit --squash F --allow-empty
+  cob = !git branch | fzf | tr -d '[:space:]' | xargs git checkout
+  coba = !git branch --all | fzf | tr -d '[:space:]' | awk -F/ '{print $NF}' | xargs git checkout
+  standup = log --abbrev-commit --all --author=chris --since yesterday --pretty=oneline  --date=relative
+  feat = "!f() { git checkout -b \"$1\" main; }; f"
+  recentb = "!r() { refbranch=$1 count=$2; git for-each-ref --sort=-committerdate refs/heads --format='%(refname:short)|%(HEAD)%(color:yellow)%(refname:short)|%(color:bold green)%(committerdate:relative)|%(color:blue)%(subject)|%(color:magenta)%(authorname)%(color:reset)' --color=always --count=${count:-20} | while read line; do branch=$(echo \"$line\" | awk 'BEGIN { FS = \"|\" }; { print $1 }' | tr -d '*'); ahead=$(git rev-list --count \"${refbranch:-origin/master}..${branch}\"); behind=$(git rev-list --count \"${branch}..${refbranch:-origin/master}\"); colorline=$(echo \"$line\" | sed 's/^[^|]*|//'); echo \"$ahead|$behind|$colorline\" | awk -F'|' -vOFS='|' '{$5=substr($5,1,70)}1' ; done | ( echo \"ahead|behind||branch|lastcommit|message|author\\n\" && cat) | column -ts'|';}; r"
+  rbnocolor = "!r() { refbranch=$1 count=$2; git for-each-ref --sort=-committerdate refs/heads --format='%(refname:short)|%(HEAD)%(refname:short)|%(committerdate:relative)|%(subject)|%(authorname)' --count=${count:-20} | while read line; do branch=$(echo \"$line\" | awk 'BEGIN { FS = \"|\" }; { print $1 }' | tr -d '*'); ahead=$(git rev-list --count \"${refbranch:-origin/master}..${branch}\"); behind=$(git rev-list --count \"${branch}..${refbranch:-origin/master}\"); colorline=$(echo \"$line\" | sed 's/^[^|]*|//'); echo \"$ahead|$behind|$colorline\" | awk -F'|' -vOFS='|' '{$5=substr($5,1,70)}1' ; done | ( echo \"ahead|behind||branch|lastcommit|message|author\\n\" && cat) | column -ts'|';}; r"
+  rb = "!git rbnocolor | fzf --header-lines=1 | awk '{print $3}' | xargs git co"
 [diff]
-  tool = p4merge
-  guitool = p4merge
-[difftool "p4merge"]
-  cmd = p4merge.exe \"$LOCAL\" \"$REMOTE\"
+  tool = nvimdiff
+[difftool]
+  prompt = false
+[difftool "nvimdiff"]
+  cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+[merge]
+  tool = nvimdiff
+[mergetool]
+  prompt = true
+  keepBackup = false
+[mergetool "nvim"]
+  cmd = "nvim -d -c \"wincmd l\" -c \"norm ]c\" \"$LOCAL\" \"$MERGED\" \"$REMOTE\""
 [credential]
   helper = wincred
 [user]
   name = Christoffer Nilsson
-  email = christ.nilsson@gmail.com
+  email = christoffer.nilsson@svenskaspel.se
 [push]
   default = current
 [core]
-	editor = nvim
+  editor = nvim
+[pull]
+  ff = only
+[core]
+  commentchar = $
+
