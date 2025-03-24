@@ -19,7 +19,13 @@ else
 fi
 
 # aerospace
-ln -sf "$DOTFILES_DIR/aerospace" ~/.config/aerospace
+AEROSPACE_TARGET="$HOME/.config/aerospace"
+AEROSPACE_SOURCE="$DOTFILES_DIR/aerospace"
+
+if [ "$(readlink "$AEROSPACE_TARGET")" != "$AEROSPACE_SOURCE" ]; then
+  rm -rf "$AEROSPACE_TARGET"
+  ln -s "$AEROSPACE_SOURCE" "$AEROSPACE_TARGET"
+fi
 
 # git
 ln -sf "$DOTFILES_DIR/gitconfig.symlink" ~/.gitconfig
