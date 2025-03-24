@@ -30,6 +30,26 @@ fi
 # git
 ln -sf "$DOTFILES_DIR/gitconfig.symlink" ~/.gitconfig
 
+# Ghostty config
+GHOSTTY_TARGET="$HOME/.config/ghostty"
+GHOSTTY_SOURCE="$DOTFILES_DIR/ghostty"
+
+# Link the config folder if not already linked properly
+if [ "$(readlink "$GHOSTTY_TARGET")" != "$GHOSTTY_SOURCE" ]; then
+  rm -rf "$GHOSTTY_TARGET"
+  ln -s "$GHOSTTY_SOURCE" "$GHOSTTY_TARGET"
+fi
+
+# Temp clone Catppuccin theme and copy theme files
+GHOSTTY_CATTPUCCIN_TEMP_DIR=$(mktemp -d)
+git clone --depth 1 https://github.com/catppuccin/ghostty.git "$GHOSTTY_CATTPUCCIN_TEMP_DIR"
+
+mkdir -p "$GHOSTTY_TARGET/themes"
+cp -r "$GHOSTTY_CATTPUCCIN_TEMP_DIR/themes/"* "$GHOSTTY_TARGET/themes/"
+
+# Cleanup
+rm -rf "$GHOSTTY_CATTPUCCIN_TEMP_DIR"
+
 # bin (only if sudo)
 for file in "$DOTFILES_DIR/bin/"*; do
   sudo ln -sf "$file" /usr/local/bin/$(basename "$file")
