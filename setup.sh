@@ -47,8 +47,16 @@ git clone --depth 1 https://github.com/catppuccin/ghostty.git "$GHOSTTY_CATTPUCC
 mkdir -p "$GHOSTTY_TARGET/themes"
 cp -r "$GHOSTTY_CATTPUCCIN_TEMP_DIR/themes/"* "$GHOSTTY_TARGET/themes/"
 
-# Cleanup
 rm -rf "$GHOSTTY_CATTPUCCIN_TEMP_DIR"
+
+# nvim
+NVIM_TARGET="$HOME/.config/nvim"
+NVIM_SOURCE="$DOTFILES_DIR/nvim"
+
+if [ "$(readlink "$NVIM_TARGET")" != "$NVIM_SOURCE" ]; then
+  rm -rf "$NVIM_TARGET"
+  ln -s "$NVIM_SOURCE" "$NVIM_TARGET"
+fi
 
 # bin (only if sudo)
 for file in "$DOTFILES_DIR/bin/"*; do
