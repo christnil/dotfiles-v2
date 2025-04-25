@@ -3,6 +3,15 @@
 # Get the directory of the script (i.e., the root of your dotfiles repo)
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# zsh
+
+ln -sf "$DOTFILES_DIR/zsh/zshrc.symlink" ~/.zshrc
+ln -sf "$DOTFILES_DIR/zsh/zshenv.symlink" ~/.zshenv
+#ln -sf "$DOTFILES_DIR/zsh/zprofile.symlink" ~/.zprofile
+#ln -sf "$DOTFILES_DIR/zsh/aliases.symlink" ~/.zsh_aliases
+#ln -sf "$DOTFILES_DIR/zsh/functions.symlink" ~/.zsh_functions
+#ln -sf "$DOTFILES_DIR/zsh/completions.symlink" ~/.zsh_completions
+
 # tmux
 for file in "$DOTFILES_DIR/tmux/"*; do
   ln -sf "$file" ~/.config/tmux/$(basename "$file")
