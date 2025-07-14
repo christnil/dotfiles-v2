@@ -119,12 +119,12 @@ function mcli() {
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 eval "$(fnm env --use-on-cd)"
 
-source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
-chruby 3.2.2
+# source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
+# chruby 3.2.2
 
 
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/chris/.rd/bin:$PATH"
+export PATH="/Users/cajg/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
 
 ### Test ignoring to see if sdkman java takes effekt
@@ -180,3 +180,10 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# fnm
+FNM_PATH="/Users/cajg/Library/Application Support/fnm"
+if [ -d "$FNM_PATH" ]; then
+  export PATH="/Users/cajg/Library/Application Support/fnm:$PATH"
+  eval "`fnm env`"
+fi

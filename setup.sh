@@ -13,6 +13,7 @@ ln -sf "$DOTFILES_DIR/zsh/zshenv.symlink" ~/.zshenv
 #ln -sf "$DOTFILES_DIR/zsh/completions.symlink" ~/.zsh_completions
 
 # tmux
+mkdir -p ~/.config/tmux
 for file in "$DOTFILES_DIR/tmux/"*; do
   ln -sf "$file" ~/.config/tmux/$(basename "$file")
 done
