@@ -116,6 +116,23 @@ function mcli() {
 	(cd ~/w/martech-cli && bun index.ts "$@")
 }
 
+function gitfa() {
+  git -c color.ui=always status --porcelain | \
+  fzf --ansi --multi \
+      --preview '
+        file="$(echo {} | sed "s/^.. //")";
+        st="$(echo {} | cut -c1-2)";
+        if [ "$st" = "??" ]; then
+          command -v bat >/dev/null 2>&1 && bat --style=numbers --color=always -- "$file" || sed -n "1,200p" "$file"
+        else
+          git diff --color=always -- "$file" | sed -n "1,500p"
+        fi
+      ' \
+      --preview-window=right,60% \
+      --bind 'ctrl-d:preview-page-down,ctrl-u:preview-page-up,ctrl-s:toggle-preview' | \
+  sed 's/^.. //' | xargs -r git add --
+}
+
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 eval "$(fnm env --use-on-cd)"
 
@@ -140,6 +157,9 @@ export PATH="$PATH:/Users/chris/.dotnet/tools"
 export PATH="$PATH:/Users/chris/.local/share/nvim/mason/bin"
 #Add libs dir
 export PATH="$PATH:/Users/chris/libs"
+# Opengrep
+export PATH="$PATH:/Users/cajg/.opengrep/cli/latest"
+
 
 export DOTNET_ROOT="/usr/local/share/dotnet"
 export EDITOR=nvim
