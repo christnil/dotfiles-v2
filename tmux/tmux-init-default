@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Default tmux session initialization script
+# This script sets up a standard development environment with three windows
+
+# Get the session name and current path
+SESSION=$(tmux display-message -p '#S')
+SESSION_PATH=$(tmux display-message -p '#{pane_current_path}')
+
+# Rename first window to 'edit' and start nvim
+tmux rename-window -t $SESSION:1 'edit'
+tmux send-keys -t $SESSION:1 'nvim' C-m
+
+# Create 'build' window
+tmux new-window -t $SESSION -n 'build' -c "$SESSION_PATH"
+
+# Create 'git' window
+tmux new-window -t $SESSION -n 'git' -c "$SESSION_PATH"
+
+# Return to the first window
+tmux select-window -t $SESSION:1

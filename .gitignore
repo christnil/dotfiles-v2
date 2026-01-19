@@ -1,2 +1,5 @@
 ghostty/themes/catppuccin-*
 opencode/.githubsecret
+
+# Tmux init scripts (should be local to projects, not committed)
+.tmux-init

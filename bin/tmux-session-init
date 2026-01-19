@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Tmux session-created hook handler
+# Searches for .tmux-init in session directory and parent directories (up to 3 levels)
+
+# Get the session's starting directory
+session_path=$(tmux display-message -p -F "#{session_path}")
+
+# If session_path is empty, try to get it from the first window's pane
+if [[ -z "$session_path" ]]; then
+    session_path=$(tmux display-message -p -F "#{pane_current_path}")
+fi
+
+# Search for .tmux-init in directory hierarchy (up to 3 levels)
+find_init_script() {
+    local dir="$1"
+    local max_levels=3
+    local current_level=0
+    
+    while [[ $current_level -lt $max_levels ]]; do
+        if [[ -f "$dir/.tmux-init" ]]; then
+            echo "$dir/.tmux-init"
+            return 0
+        fi
+        
+        # Stop at home directory or root
+        if [[ "$dir" == "$HOME" ]] || [[ "$dir" == "/" ]]; then
+            break
+        fi
+        
+        dir=$(dirname "$dir")
+        ((current_level++))
+    done
+    
+    return 1
+}
+
+# Find and execute init script if it exists
+if [[ -n "$session_path" ]]; then
+    if init_script=$(find_init_script "$session_path"); then
+        # Make script executable if it isn't already
+        chmod +x "$init_script" 2>/dev/null
+        
+        # Execute the init script
+        bash "$init_script"
+    fi
+fi

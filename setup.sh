@@ -90,6 +90,13 @@ if [ "$(readlink "$OPENCODE_TARGET")" != "$OPENCODE_SOURCE" ]; then
   echo "Linked OpenCode config from dotfiles"
 fi
 
+# Default tmux-init script for work directory
+# This allows you to have a default session setup for all your projects
+if [ -d "$HOME/w" ]; then
+  ln -sf "$DOTFILES_DIR/tmux/tmux-init-default" "$HOME/w/.tmux-init"
+  echo "Linked default tmux-init script to ~/w"
+fi
+
 # bin (only if sudo)
 for file in "$DOTFILES_DIR/bin/"*; do
   sudo ln -sf "$file" /usr/local/bin/$(basename "$file")
