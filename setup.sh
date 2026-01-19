@@ -68,6 +68,28 @@ if [ "$(readlink "$NVIM_TARGET")" != "$NVIM_SOURCE" ]; then
   ln -s "$NVIM_SOURCE" "$NVIM_TARGET"
 fi
 
+# opencode
+OPENCODE_TARGET="$HOME/.config/opencode"
+OPENCODE_SOURCE="$DOTFILES_DIR/opencode"
+
+# Create .config directory if it doesn't exist
+mkdir -p "$HOME/.config"
+
+# Check if target is already a symlink pointing to the correct source
+if [ "$(readlink "$OPENCODE_TARGET")" != "$OPENCODE_SOURCE" ]; then
+  # Backup existing config if it exists and is not a symlink
+  if [ -d "$OPENCODE_TARGET" ] && [ ! -L "$OPENCODE_TARGET" ]; then
+    echo "Backing up existing OpenCode config to $OPENCODE_TARGET.backup"
+    mv "$OPENCODE_TARGET" "$OPENCODE_TARGET.backup"
+  elif [ -L "$OPENCODE_TARGET" ]; then
+    # Remove old symlink
+    rm "$OPENCODE_TARGET"
+  fi
+  # Create symlink
+  ln -s "$OPENCODE_SOURCE" "$OPENCODE_TARGET"
+  echo "Linked OpenCode config from dotfiles"
+fi
+
 # bin (only if sudo)
 for file in "$DOTFILES_DIR/bin/"*; do
   sudo ln -sf "$file" /usr/local/bin/$(basename "$file")

@@ -2,6 +2,17 @@
 
 if [[ $# -eq 1 ]]; then
     selected=$1
+
+    # Expand a leading tilde passed through tmux/run-shell (tilde expansion does
+    # not occur when '~' comes from a variable).
+    if [[ $selected == ~* ]]; then
+        selected=${selected/#\~/$HOME}
+    fi
+
+    # Normalize to an absolute, existing directory.
+    if ! selected=$(cd "$selected" 2>/dev/null && pwd -P); then
+        exit 1
+    fi
 else
     candidates=()
 
