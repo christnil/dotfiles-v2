@@ -3,14 +3,25 @@
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    selected=$(find ~/w ~/p -mindepth 1 -maxdepth 1 -type d | fzf)
+    candidates=()
+
+    # Keep the general catalog shallow (no deep recursion).
+    [[ -d "$HOME/w" ]] && candidates+=("$(find "$HOME/w" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | grep -v "^$HOME/w/ms$")")
+    [[ -d "$HOME/p" ]] && candidates+=("$(find "$HOME/p" -mindepth 1 -maxdepth 1 -type d 2>/dev/null)")
+
+    # Microservices: include both ms root and module folders.
+    # Layout: w/ms/<ms-name>/<module>
+    [[ -d "$HOME/w/ms" ]] && candidates+=("$(find "$HOME/w/ms" -mindepth 1 -maxdepth 2 -type d 2>/dev/null)")
+
+    selected=$(printf "%s\n" "${candidates[@]}" | sed '/^$/d' | sort -u | fzf)
 fi
 
 if [[ -z $selected ]]; then
     exit 0
 fi
 
-selected_name=$(basename "$selected" | tr . _)
+# Use a path-derived name to avoid collisions (e.g. multiple "api" modules).
+selected_name=$(echo "${selected/#$HOME\//}" | tr '/.' '__')
 tmux_running=$(pgrep tmux)
 
 if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
