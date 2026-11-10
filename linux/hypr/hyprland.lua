@@ -111,7 +111,7 @@ hl.config({
     },
 
     master = {
-        new_status = "master",
+        new_status = "slave", -- new windows join the stack; the big window stays
     },
 
     misc = {
@@ -179,13 +179,22 @@ hl.device({ name = "epic-mouse-v1", sensitivity = -0.5 })
 ---------------------
 
 local mainMod = "SUPER" -- Sets "Windows" key as main modifier
+
+-- Layout helpers: each workspace is dwindle (default) or master (SUPER+SHIFT+T toggles)
+local function is_master()
+    local ws = hl.get_active_workspace()
+    return ws ~= nil and ws.tiled_layout == "master"
+end
+local function master_msg(msg) -- run a master-layout command, no-op on dwindle workspaces
+    return function() if is_master() then hl.dispatch(hl.dsp.layout(msg)) end end
+end
 -- Every bind has a trailing comment: SUPER+K (hypr-keys) shows them as a cheat sheet.
 
 -- Apps
 hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd(terminal))      -- terminal (kitty)
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))   -- file manager (Thunar)
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))          -- app launcher (rofi)
-hl.bind(mainMod .. " + K", hl.dsp.exec_cmd("hypr-keys"))   -- this cheat sheet
+hl.bind(mainMod .. " + slash", hl.dsp.exec_cmd("hypr-keys")) -- this cheat sheet (SUPER+/)
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -p clipboard -display-columns 2 | cliphist decode | wl-copy")) -- clipboard history
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("wallpaper next"))           -- next wallpaper
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("wallpaper random")) -- random wallpaper
@@ -197,8 +206,8 @@ hl.bind(mainMod .. " + CTRL + A", hl.dsp.exec_cmd(tui("wiremix")))  -- audio mix
 hl.bind(mainMod .. " + CTRL + T", hl.dsp.exec_cmd(tui("btop")))     -- system monitor (btop)
 
 -- Session
-hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("pidof hypridle >/dev/null && loginctl lock-session || hyprlock")) -- lock screen
-hl.bind(mainMod .. " + SHIFT + L", hl.dsp.exec_cmd("wlogout"))  -- power menu
+hl.bind(mainMod .. " + Escape", hl.dsp.exec_cmd("pidof hypridle >/dev/null && loginctl lock-session || hyprlock")) -- lock screen
+hl.bind(mainMod .. " + SHIFT + Escape", hl.dsp.exec_cmd("wlogout"))  -- power menu
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'")) -- log out of Hyprland
 
 -- Screenshots (saved to ~/Pictures/Screenshots)
@@ -212,7 +221,10 @@ hl.bind(mainMod .. " + SHIFT + Print", hl.dsp.exec_cmd("hyprshot -m window -o $H
 hl.bind(mainMod .. " + C", hl.dsp.window.close())                                   -- close window
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))              -- toggle floating
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())                                  -- pseudo-tile (dwindle)
-hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))                            -- toggle split direction (dwindle)
+hl.bind(mainMod .. " + T", function() -- flip split (dwindle) / flip big window side (master)
+    if is_master() then hl.dispatch(hl.dsp.layout("orientationcycle left right"))
+    else hl.dispatch(hl.dsp.layout("togglesplit")) end
+end)
 hl.bind(mainMod .. " + F",         hl.dsp.window.fullscreen({ mode = "fullscreen" })) -- fullscreen (hides bar)
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen({ mode = "maximized" }))  -- maximize (keeps bar)
 
@@ -220,11 +232,51 @@ hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))   -- focus 
 hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))  -- focus right
 hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))     -- focus up
 hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))   -- focus down
+hl.bind(mainMod .. " + H", hl.dsp.focus({ direction = "left" }))   -- focus left (vim)
+hl.bind(mainMod .. " + J", hl.dsp.focus({ direction = "down" }))   -- focus down (vim)
+hl.bind(mainMod .. " + K", hl.dsp.focus({ direction = "up" }))     -- focus up (vim)
+hl.bind(mainMod .. " + L", hl.dsp.focus({ direction = "right" }))  -- focus right (vim)
 
 hl.bind(mainMod .. " + SHIFT + left",  hl.dsp.window.move({ direction = "l" }))  -- move window left
 hl.bind(mainMod .. " + SHIFT + right", hl.dsp.window.move({ direction = "r" }))  -- move window right
 hl.bind(mainMod .. " + SHIFT + up",    hl.dsp.window.move({ direction = "u" }))  -- move window up
 hl.bind(mainMod .. " + SHIFT + down",  hl.dsp.window.move({ direction = "d" }))  -- move window down
+hl.bind(mainMod .. " + SHIFT + H", hl.dsp.window.move({ direction = "l" }))  -- move window left (vim)
+hl.bind(mainMod .. " + SHIFT + J", hl.dsp.window.move({ direction = "d" }))  -- move window down (vim)
+hl.bind(mainMod .. " + SHIFT + K", hl.dsp.window.move({ direction = "u" }))  -- move window up (vim)
+hl.bind(mainMod .. " + SHIFT + L", hl.dsp.window.move({ direction = "r" }))  -- move window right (vim)
+
+-- Cycle windows on this workspace
+hl.bind("ALT + Tab",         hl.dsp.window.cycle_next())                  -- next window
+hl.bind("ALT + SHIFT + Tab", hl.dsp.window.cycle_next({ next = false }))  -- previous window
+
+-- Master layout (1 big + stack). SUPER+SHIFT+T switches this workspace dwindle <-> master
+hl.bind(mainMod .. " + SHIFT + T", function() -- toggle this workspace: dwindle <-> master
+    local ws = hl.get_active_workspace()
+    if ws == nil or ws.id == nil then return end
+    hl.workspace_rule({ workspace = tostring(ws.id), layout = is_master() and "dwindle" or "master" })
+end)
+hl.bind(mainMod .. " + Return", master_msg("swapwithmaster")) -- (master) focused window becomes the big one
+hl.bind(mainMod .. " + period", master_msg("rollnext"))       -- (master) rotate: next window into the big spot
+hl.bind(mainMod .. " + comma",  master_msg("rollprev"))       -- (master) rotate: previous window into the big spot
+hl.bind(mainMod .. " + CTRL + right", function() -- big window wider (master) / grow window (dwindle)
+    if is_master() then hl.dispatch(hl.dsp.layout("mfact +0.05"))
+    else hl.dispatch(hl.dsp.window.resize({ x = 60, y = 0, relative = true })) end
+end, { repeating = true })
+hl.bind(mainMod .. " + CTRL + left", function() -- big window narrower (master) / shrink window (dwindle)
+    if is_master() then hl.dispatch(hl.dsp.layout("mfact -0.05"))
+    else hl.dispatch(hl.dsp.window.resize({ x = -60, y = 0, relative = true })) end
+end, { repeating = true })
+
+-- Groups (tabbed windows)
+hl.bind(mainMod .. " + G", hl.dsp.group.toggle())                            -- make/unmake a tab group
+hl.bind(mainMod .. " + ALT + left",  hl.dsp.window.move({ into_group = "l" })) -- move window into the group on the left
+hl.bind(mainMod .. " + ALT + right", hl.dsp.window.move({ into_group = "r" })) -- move window into the group on the right
+hl.bind(mainMod .. " + ALT + up",    hl.dsp.window.move({ into_group = "u" })) -- move window into the group above
+hl.bind(mainMod .. " + ALT + down",  hl.dsp.window.move({ into_group = "d" })) -- move window into the group below
+hl.bind(mainMod .. " + SHIFT + G", hl.dsp.window.move({ out_of_group = true })) -- take window out of its group
+hl.bind(mainMod .. " + CTRL + Tab", hl.dsp.group.next())                       -- next tab in group
+hl.bind(mainMod .. " + CTRL + SHIFT + Tab", hl.dsp.group.prev())               -- previous tab in group
 
 -- Keyboard resize mode: mainMod + minus enters, arrows/hjkl resize, Escape/Enter exits
 hl.bind(mainMod .. " + minus", hl.dsp.submap("resize")) -- resize mode (arrows/hjkl, Esc to exit)
@@ -247,8 +299,10 @@ for i = 1, 10 do
     local key = i % 10 -- 10 maps to key 0
     hl.bind(mainMod .. " + " .. key,         hl.dsp.focus({ workspace = i }))       -- go to workspace
     hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i })) -- move window to workspace
+    hl.bind(mainMod .. " + CTRL + " .. key, hl.dsp.window.move({ workspace = i, follow = false })) -- send window to workspace (stay here)
 end
 
+hl.bind(mainMod .. " + Tab", hl.dsp.focus({ workspace = "previous" })) -- back to previous workspace
 hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"))           -- show/hide scratchpad
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" })) -- move window to scratchpad
 
