@@ -1,0 +1,12 @@
+# Starship prompt (Mac + Linux). Single line, no blank line between prompts.
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = false
+command_timeout = 500   # don't hang on slow segments in big repos
+
+[line_break]
+disabled = true
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"

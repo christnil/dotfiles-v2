@@ -41,6 +41,9 @@ fi
 mkdir -p "$HOME/.config/mise"
 ln -sf "$DOTFILES_DIR/mise/config.toml" "$HOME/.config/mise/config.toml"
 
+# starship prompt (shared)
+ln -sf "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
+
 # git
 ln -sf "$DOTFILES_DIR/gitconfig.symlink" ~/.gitconfig
 
