@@ -45,6 +45,13 @@ end)
 ---- ENVIRONMENT VARIABLES ----
 -------------------------------
 
+-- ~/.local/bin holds helper scripts (wallpaper, hypr-keys, wifi-tui) and claude; zshrc PATH isn't used by Hyprland
+do
+    local bin, path = os.getenv("HOME") .. "/.local/bin", os.getenv("PATH") or ""
+    if not (":" .. path .. ":"):find(":" .. bin .. ":", 1, true) then
+        hl.env("PATH", bin .. ":" .. path) -- only once, even across `hyprctl reload`
+    end
+end
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
 hl.env("XCURSOR_THEME", "catppuccin-mocha-dark-cursors")
