@@ -61,9 +61,13 @@ command -v zoxide   >/dev/null && eval "$(zoxide init zsh)"      # z <dir>, zi =
 command -v direnv   >/dev/null && eval "$(direnv hook zsh)"
 command -v starship >/dev/null && eval "$(starship init zsh)"    # prompt (overrides ZSH_THEME)
 if command -v eza >/dev/null; then
-  alias ls='eza --group-directories-first'
-  alias ll='eza -l --git --group-directories-first --icons=auto'
-  alias la='ll -a'
+  # eza only in a real terminal: with no path and a non-tty stdin, eza reads paths from
+  # stdin and prints nothing, which breaks scripts/agents that run `ls`.
+  unalias ls ll la 2>/dev/null   # oh-my-zsh defines these as aliases
+  function _eza { if [[ -t 0 && -t 1 ]]; then eza --group-directories-first "$@"; else command ls "$@"; fi }
+  function ls { _eza "$@" }
+  function ll { if [[ -t 0 && -t 1 ]]; then eza -l --git --group-directories-first --icons=auto "$@"; else command ls -l "$@"; fi }
+  function la { ll -a "$@" }
   alias lt='eza --tree --level=2 --icons=auto'
 fi
 command -v lazygit >/dev/null && alias lg='lazygit'
