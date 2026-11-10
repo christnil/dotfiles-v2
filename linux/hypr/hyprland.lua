@@ -267,6 +267,11 @@ hl.bind("XF86AudioMicMute",      hl.dsp.exec_cmd("swayosd-client --input-volume 
 hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd("swayosd-client --brightness raise || brightnessctl -e4 -n2 set 5%+"), { locked = true, repeating = true }) -- brightness up
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("swayosd-client --brightness lower || brightnessctl -e4 -n2 set 5%-"), { locked = true, repeating = true }) -- brightness down
 
+-- Lid: logind ignores lid-close on AC (keeps running), so lock + turn the laptop screen off here.
+-- On battery logind still suspends (hypridle locks first).
+hl.bind("switch:on:Lid Switch",  hl.dsp.exec_cmd([[loginctl lock-session; hyprctl dispatch 'hl.dsp.dpms({ action = "off", monitor = "eDP-1" })']]), { locked = true }) -- lid closed: lock + screen off
+hl.bind("switch:off:Lid Switch", hl.dsp.exec_cmd([[hyprctl dispatch 'hl.dsp.dpms({ action = "on" })']]), { locked = true }) -- lid opened: screen on
+
 hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = true }) -- next track
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true }) -- play/pause
 hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true }) -- play/pause
