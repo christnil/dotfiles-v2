@@ -11,7 +11,7 @@
   dump = cat-file -p
   wtf = reset HEAD --hard
   unstage = reset HEAD
-  sync = pull --rebase origin master
+  sync = "!git pull --rebase origin $(git symbolic-ref --short refs/remotes/origin/HEAD | sed s@^origin/@@)"
   fixup = !git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs -o git commit --fixup
   reword = !git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs -o -I F git commit --squash F --allow-empty
   cob = !git branch | fzf | tr -d '[:space:]' | xargs git checkout
@@ -34,17 +34,29 @@
   keepBackup = false
 [mergetool "nvim"]
   cmd = "nvim -d -c \"wincmd l\" -c \"norm ]c\" \"$LOCAL\" \"$MERGED\" \"$REMOTE\""
-[credential]
-  helper = wincred
 [user]
   name = Christoffer Nilsson
-  email = christoffer.nilsson@svenskaspel.se
+  email = christ.nilsson@gmail.com
 [push]
   default = current
 [core]
   editor = nvim
+  # delta for diffs when installed, plain less otherwise (Mac without delta keeps working)
+  pager = "if command -v delta >/dev/null 2>&1; then delta; else less -FRX; fi"
+[interactive]
+  diffFilter = "if command -v delta >/dev/null 2>&1; then delta --color-only; else cat; fi"
+[delta]
+  navigate = true
+  line-numbers = true
+  syntax-theme = Catppuccin Mocha
+[merge]
+  conflictstyle = zdiff3
 [pull]
   ff = only
 [core]
   commentchar = $
 
+# Per-machine overrides (email, credential helper). Not in git.
+# Linux: helper = !gh auth git-credential   Mac: helper = osxkeychain, work email
+[include]
+  path = ~/.gitconfig.local

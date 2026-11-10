@@ -1,0 +1,56 @@
+# macOS (work Mac) — sourced from zshrc.symlink
+
+function mcli() {
+	(cd ~/w/martech-cli && bun index.ts "$@")
+}
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/cajg/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
+# .NET
+export PATH="$PATH:/usr/local/share/dotnet"
+export PATH="$PATH:/Users/chris/.dotnet/tools"
+export DOTNET_ROOT="/usr/local/share/dotnet"
+
+export PATH="$PATH:/Users/chris/libs"
+# Opengrep
+export PATH="$PATH:/Users/cajg/.opengrep/cli/latest"
+
+export KUBECONFIG=~/.kube/config:~/.kube/rancher-test-config:~/.kube/rancher-mr-dc3-test-config
+
+# nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# bun completions
+[ -s "/Users/chris/.bun/_bun" ] && source "/Users/chris/.bun/_bun"
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /opt/homebrew/bin/terraform terraform
+
+# Google Cloud SDK
+if [ -f '/Users/chris/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/chris/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '/Users/chris/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/chris/google-cloud-sdk/completion.zsh.inc'; fi
+
+[ -f "/Users/chris/.ghcup/env" ] && . "/Users/chris/.ghcup/env" # ghcup-env
+
+# pnpm
+export PNPM_HOME="/Users/chris/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+
+# fnm
+FNM_PATH="/Users/cajg/Library/Application Support/fnm"
+if [ -d "$FNM_PATH" ]; then
+  export PATH="/Users/cajg/Library/Application Support/fnm:$PATH"
+  eval "`fnm env`"
+fi
+
+# Work network does TLS interception
+opencode() {
+  NODE_TLS_REJECT_UNAUTHORIZED=0 command opencode "$@"
+}

@@ -1,0 +1,8 @@
+# Global runtimes (both machines). Per-project versions: `mise use node@22` in the repo,
+# or existing .nvmrc / .node-version / .java-version / .sdkmanrc files are picked up too.
+[tools]
+node = "lts"
+java = "temurin-25"
+
+[settings]
+idiomatic_version_file_enable_tools = ["node", "java"]
