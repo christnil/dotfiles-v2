@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# wallpaper [random|next|prev|restore|rotate <secs>|<file>]
+# Sets the wallpaper on all monitors via hyprpaper IPC. Images: ~/Pictures/wallpapers/*
+# (top level only; ~/Pictures/wallpapers/candidates/ is NOT in the rotation).
+DIR="${WALLPAPER_DIR:-$HOME/Pictures/wallpapers}"
+STATE="$HOME/.cache/wallpaper-current"
+
+mapfile -t ALL < <(find "$DIR" -maxdepth 1 -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) | sort)
+[ ${#ALL[@]} -gt 0 ] || { echo "no images in $DIR" >&2; exit 1; }
+CUR="$(cat "$STATE" 2>/dev/null)"
+
+idx_of_current() { local i; for i in "${!ALL[@]}"; do [ "${ALL[$i]}" = "$CUR" ] && { echo "$i"; return; }; done; echo -1; }
+pick_random() {
+  local f
+  [ ${#ALL[@]} -eq 1 ] && { echo "${ALL[0]}"; return; }
+  while f="${ALL[RANDOM % ${#ALL[@]}]}"; [ "$f" = "$CUR" ]; do :; done
+  echo "$f"
+}
+
+set_wall() {
+  hyprctl hyprpaper wallpaper ",$1,cover" >/dev/null && { mkdir -p "${STATE%/*}"; echo "$1" > "$STATE"; }
+}
+
+case "${1:-random}" in
+  random)  set_wall "$(pick_random)" ;;
+  next)    i=$(idx_of_current); set_wall "${ALL[$(( (i + 1) % ${#ALL[@]} ))]}" ;;
+  prev)    i=$(idx_of_current); [ "$i" -lt 0 ] && i=0; set_wall "${ALL[$(( (i - 1 + ${#ALL[@]}) % ${#ALL[@]} ))]}" ;;
+  restore) if [ -f "$CUR" ]; then set_wall "$CUR"; else set_wall "$(pick_random)"; fi ;;
+  rotate)  # long-running: change every N seconds (default 30 min)
+           secs="${2:-1800}"; while sleep "$secs"; do "$0" random; done ;;
+  *)       [ -f "$1" ] || { echo "usage: wallpaper [random|next|prev|restore|rotate <secs>|<file>]" >&2; exit 1; }
+           set_wall "$(realpath "$1")" ;;
+esac

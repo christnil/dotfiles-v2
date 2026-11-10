@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+"""Cheat sheet: list Hyprland binds from hyprland.lua in rofi (SUPER+K)."""
+import os, re, subprocess
+
+path = os.path.expanduser("~/.config/hypr/hyprland.lua")
+src = open(path).read().splitlines()
+
+consts = dict(re.findall(r'^local\s+(\w+)\s*=\s*"([^"]*)"', "\n".join(src), re.M))
+NICE = {"mouse:272": "LMB drag", "mouse:273": "RMB drag", "mouse_down": "scroll down", "mouse_up": "scroll up"}
+
+def key_expr(expr):
+    parts = []
+    for p in re.split(r"\s*\.\.\s*", expr.strip()):
+        if p.startswith('"'):
+            parts.append(p.strip('"'))
+        elif p == "key":
+            parts.append("[1-0]")
+        else:
+            parts.append(consts.get(p, p))
+    k = "".join(parts)
+    for a, b in NICE.items():
+        k = k.replace(a, b)
+    return k
+
+def action(rest, comment):
+    if comment:
+        return comment
+    m = re.search(r'exec_cmd\(\s*"([^"]+)"', rest) or re.search(r"exec_cmd\(\s*'([^']+)'", rest)
+    if m:
+        return m.group(1)
+    m = re.search(r"exec_cmd\(\s*(\w+)\s*\)", rest)
+    if m:
+        return consts.get(m.group(1), m.group(1))
+    m = re.search(r"hl\.dsp\.([\w.]+)\((.*)", rest)
+    if m:
+        args = re.sub(r"[{}()]", "", m.group(2)).replace("  ", " ").strip(" ,")
+        args = re.sub(r",?\s*\{?\s*(locked|repeating|mouse)\s*=\s*true\s*\}?", "", args)
+        return f"{m.group(1)} {args}".strip()
+    return "lua function"
+
+rows, submap, prev_comment = [], None, ""
+for line in src:
+    s = line.strip()
+    m = re.match(r'hl\.define_submap\("(\w+)"', s)
+    if m:
+        submap = m.group(1); continue
+    if submap and s == "end)":
+        submap = None; continue
+    if s.startswith("--"):
+        prev_comment = s.lstrip("- ").strip(); continue
+    m = re.match(r"hl\.bind\((.+?),\s*(.*)$", s)
+    if not m:
+        prev_comment = "" if s else prev_comment
+        continue
+    keyexpr, rest = m.groups()
+    tm = re.search(r"\)\s+--\s+(.*)$", rest) or re.search(r"^function\(\)\s+--\s+(.*)$", rest)
+    trailing = tm.group(1).strip() if tm else ""
+    act = trailing or (prev_comment if rest.strip().startswith("function()") else "")
+    k = key_expr(keyexpr)
+    if submap:
+        k = f"({submap}) {k}"
+    rows.append((k, action(rest, act)))
+
+w = max(len(k) for k, _ in rows)
+text = "\n".join(f"{k.ljust(w)}   {a}" for k, a in rows)
+import sys
+if "--print" in sys.argv: print(text); sys.exit()
+subprocess.run(["rofi", "-dmenu", "-i", "-p", "keys", "-no-custom", "-theme-str",
+                "window {width: 60%;} listview {lines: 20;} * {font: \"JetBrainsMono Nerd Font 11\";}"],
+               input=text, text=True)

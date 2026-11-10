@@ -1,0 +1,11 @@
+onboarding = false
+# Herdr TUI config. Full reference: `herdr --default-config` or herdr.dev/tui/docs/config-reference/
+# Runs in its own kitty window on the Hyprland agents scratchpad (Super+A), never inside tmux.
+
+[keys]
+# Same prefix as tmux, for muscle memory
+prefix = "ctrl+a"
+
+[ui.toast]
+# Desktop notification (via mako) when a background agent finishes or needs input
+delivery = "system"

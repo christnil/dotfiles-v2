@@ -1,0 +1,20 @@
+# mako — Catppuccin Mocha
+font=JetBrainsMono Nerd Font 10
+background-color=#1e1e2e
+text-color=#cdd6f4
+border-color=#89b4fa
+progress-color=over #313244
+border-size=2
+border-radius=10
+padding=10
+margin=10
+width=380
+default-timeout=6000
+max-visible=5
+
+[urgency=low]
+border-color=#45475a
+
+[urgency=high]
+border-color=#fab387
+default-timeout=0

@@ -37,6 +37,10 @@ if [ "$(readlink "$AEROSPACE_TARGET")" != "$AEROSPACE_SOURCE" ]; then
   ln -s "$AEROSPACE_SOURCE" "$AEROSPACE_TARGET"
 fi
 
+# mise (runtime versions, shared Mac + Linux)
+mkdir -p "$HOME/.config/mise"
+ln -sf "$DOTFILES_DIR/mise/config.toml" "$HOME/.config/mise/config.toml"
+
 # git
 ln -sf "$DOTFILES_DIR/gitconfig.symlink" ~/.gitconfig
 
@@ -101,3 +105,24 @@ fi
 for file in "$DOTFILES_DIR/bin/"*; do
   sudo ln -sf "$file" /usr/local/bin/$(basename "$file")
 done
+
+# Linux desktop (Arch + Hyprland) — only on Linux
+if [ "$(uname -s)" = "Linux" ]; then
+  for app in hypr waybar wlogout kitty rofi mako; do
+    TARGET="$HOME/.config/$app"
+    SOURCE="$DOTFILES_DIR/linux/$app"
+    if [ "$(readlink "$TARGET")" != "$SOURCE" ]; then
+      [ -e "$TARGET" ] && [ ! -L "$TARGET" ] && mv "$TARGET" "$TARGET.backup"
+      rm -f "$TARGET"
+      ln -s "$SOURCE" "$TARGET"
+    fi
+  done
+  # herdr: only the config file (the dir also holds logs/sessions)
+  mkdir -p "$HOME/.config/herdr"
+  ln -sf "$DOTFILES_DIR/linux/herdr/config.toml" "$HOME/.config/herdr/config.toml"
+  # Linux helper scripts (wallpaper, hypr-keys) -> ~/.local/bin (no sudo)
+  mkdir -p "$HOME/.local/bin"
+  for file in "$DOTFILES_DIR/linux/bin/"*; do
+    ln -sf "$file" "$HOME/.local/bin/$(basename "$file")"
+  done
+fi

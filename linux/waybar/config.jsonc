@@ -1,0 +1,97 @@
+// -*- mode: jsonc -*-
+// Catppuccin Mocha — floating island layout
+// Left: workspaces · Center: clock · Right: status
+{
+    "layer": "top",
+    "position": "top",
+    "height": 36,
+    "margin-top": 4,
+    "margin-left": 10,
+    "margin-right": 10,
+    "spacing": 6,
+
+    "modules-left":   ["hyprland/workspaces"],
+    "modules-center": ["clock"],
+    "modules-right":  ["pulseaudio", "bluetooth", "network", "battery", "tray"],
+
+    // ── Workspaces ────────────────────────────────────────────────────────────────
+    "hyprland/workspaces": {
+        "format": "{name}",
+        "on-click": "activate",
+        "sort-by-number": true,
+        "persistent-workspaces": {
+            "1": [],
+            "2": [],
+            "3": [],
+            "4": [],
+            "5": []
+        }
+    },
+
+    // ── Clock ────────────────────────────────────────────────────────────────────
+    // Format: "15 18:35"
+    "clock": {
+        "format": "{:%d %H:%M}",
+        "tooltip-format": "<big>{:%A, %d %B %Y}</big>\n<tt><small>{calendar}</small></tt>"
+    },
+
+    // ── Network ────────────────────────────────────────────────────────────────
+    // Shows IP address; full detail on hover
+    "network": {
+                "format-wifi":         "  {essid}",
+        "format-ethernet":     "  {ifname}",
+        "format-linked":       "no ip",
+        "format-disconnected": "offline",
+        "tooltip-format-wifi":        "{essid} ({signalStrength}%)\n{ipaddr}/{cidr}",
+        "tooltip-format-ethernet":    "{ifname}\n{ipaddr}/{cidr}",
+        "tooltip-format-disconnected": "disconnected",
+        // left: wifi TUI · right: copy IPv4 address
+        "on-click": "kitty --class tui-float -e wifi-tui",
+        "on-click-right": "ip -4 -o addr show scope global | awk '{print $4}' | cut -d/ -f1 | head -1 | wl-copy"
+    },
+
+    // ── Battery ────────────────────────────────────────────────────────────────
+    "battery": {
+        "bat": "BAT0",
+        "states": {
+            "warning":  30,
+            "critical": 15
+        },
+        "format":          "{icon} {capacity}%",
+        "format-charging": " {capacity}%",
+        "format-plugged":  " {capacity}%",
+        "format-icons":    ["", "", "", "", ""],
+        "tooltip-format":  "{timeTo}  {power:.1f} W"
+    },
+
+    // ── Audio ───────────────────────────────────────────────────────────────────
+    "pulseaudio": {
+        "format":       "{icon} {volume}%",
+        "format-muted": " muted",
+        "format-icons": {
+            "default": ["", "", ""]
+        },
+        // left: wiremix TUI · right: pavucontrol · scroll: volume
+        "on-click": "kitty --class tui-float -e wiremix",
+        "on-click-right": "pavucontrol",
+        "tooltip-format": "{desc}"
+    },
+
+    // ── Bluetooth ──────────────────────────────────────────────────────────────
+    "bluetooth": {
+        "format": "󰂯",
+        "format-disabled": "󰂲",
+        "format-off": "󰂲",
+        "format-connected": "󰂱 {num_connections}",
+        "tooltip-format": "{controller_alias}\t{controller_address}",
+        "tooltip-format-connected": "{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}\t{device_battery_percentage}%",
+        "on-click": "kitty --class tui-float -e bluetui"
+    },
+
+    // ── Tray ──────────────────────────────────────────────────────────────────
+    "tray": {
+        "icon-size": 14,
+        "spacing": 8
+    }
+}

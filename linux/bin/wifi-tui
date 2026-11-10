@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Wi-Fi TUI for NetworkManager: wlctl (impala-style, AUR wlctl-bin) if installed,
+# otherwise nmtui recoloured with terminal ANSI colours (= Catppuccin in kitty).
+if command -v wlctl >/dev/null; then
+  exec wlctl
+fi
+export NEWT_COLORS='
+root=white,default
+window=white,default
+border=blue,default
+shadow=default,default
+title=magenta,default
+roottext=white,default
+helpline=white,default
+textbox=white,default
+label=white,default
+listbox=white,default
+actlistbox=black,blue
+sellistbox=black,magenta
+actsellistbox=black,magenta
+entry=white,default
+disentry=gray,default
+checkbox=white,default
+actcheckbox=black,blue
+button=black,blue
+actbutton=black,magenta
+compactbutton=white,default
+emptyscale=,default
+fullscale=,blue
+'
+exec nmtui "$@"

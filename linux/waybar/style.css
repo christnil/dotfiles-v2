@@ -1,0 +1,176 @@
+/* ════════════════════════════════════════════════════════════
+   Catppuccin Mocha — Waybar theme
+   Palette variables let you swap themes by redefining these.
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Palette ────────────────────────────────────────────────── */
+@define-color base       #1e1e2e;
+@define-color mantle     #181825;
+@define-color crust      #11111b;
+@define-color surface0   #313244;
+@define-color surface1   #45475a;
+@define-color surface2   #585b70;
+@define-color overlay0   #6c7086;
+@define-color overlay1   #7f849c;
+@define-color overlay2   #9399b2;
+@define-color subtext0   #a6adc8;
+@define-color subtext1   #bac2de;
+@define-color text       #cdd6f4;
+@define-color lavender   #b4befe;
+@define-color blue       #89b4fa;
+@define-color sapphire   #74c7ec;
+@define-color sky        #89dceb;
+@define-color teal       #94e2d5;
+@define-color green      #a6e3a1;
+@define-color yellow     #f9e2af;
+@define-color peach      #fab387;
+@define-color maroon     #eba0ac;
+@define-color red        #f38ba8;
+@define-color mauve      #cba6f7;
+@define-color pink       #f5c2e7;
+@define-color flamingo   #f2cdcd;
+@define-color rosewater  #f5e0dc;
+
+/* ── Reset ──────────────────────────────────────────────────── */
+* {
+    /* Text fonts first for readable glyphs (colon, digits, letters).
+       FA icons live in Unicode PUA (U+F000+) so Noto won't conflict —
+       FA is the natural fallback for those codepoints. */
+    font-family: "Noto Sans Mono", "Noto Sans", "Font Awesome 7 Free Solid", "Font Awesome 7 Free", "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 13px;
+    min-height: 0;
+}
+
+/* ── Bar window — transparent, let the islands do the work ─── */
+window#waybar {
+    background: transparent;
+    color: @subtext1;
+}
+
+/* ── Islands ─────────────────────────────────────────────────
+   Each section gets its own pill. The bar height (config.jsonc)
+   and these vertical margins create the floating gap effect.
+   ─────────────────────────────────────────────────────────── */
+.modules-left,
+.modules-center,
+.modules-right {
+    background: @crust;
+    border-radius: 100px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    padding: 0 4px;
+}
+
+/* ── Workspaces island ───────────────────────────────────────── */
+#workspaces {
+    padding: 0 6px;   /* keeps workspace buttons away from the pill edge */
+}
+
+#workspaces button {
+    /* Circle trick: vertical margin shrinks allocated height to match min-width.
+       bar(36) - island-margins(6) - button-margins(6) = 24px = min-width → true circle */
+    padding: 0;
+    min-width: 24px;
+    min-height: 0;
+    margin: 3px 2px;
+    color: @overlay1;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    box-shadow: none;
+    transition: color 150ms ease, background 150ms ease;
+}
+
+#workspaces button:hover {
+    background: @surface0;
+    color: @subtext0;
+}
+
+#workspaces button.active {
+    color: @lavender;
+    background: @surface0;
+    border: 1px solid @lavender;
+}
+
+#workspaces button.urgent {
+    color: @red;
+    background: @surface0;
+    border: 1px solid @red;
+}
+
+#workspaces button.empty {
+    color: @surface2;
+}
+
+/* ── Clock island ────────────────────────────────────────────── */
+#clock {
+    padding: 0 14px;
+    color: @text;
+    font-weight: bold;
+    /* DejaVu's zero is a plain oval (no slash) and has strong manual
+       hinting, so it stays crisp at small sizes better than Noto here. */
+    font-family: "DejaVu Sans Mono", "Noto Sans Mono", "Noto Sans", sans-serif;
+}
+
+/* ── Right island — quiet by default ────────────────────────── */
+#pulseaudio,
+#bluetooth,
+#network,
+#battery {
+    padding: 0 8px;
+    color: @subtext0;
+}
+
+#tray {
+    padding: 0 6px;
+    color: @subtext0;
+}
+
+/* ── Network ─────────────────────────────────────────────────── */
+#network.disconnected {
+    color: @red;
+}
+
+/* ── Battery ─────────────────────────────────────────────────── */
+/* Charging: teal — a gentle positive signal */
+#battery.charging {
+    color: @teal;
+}
+
+/* Fully plugged / 100%: muted green */
+#battery.plugged {
+    color: @green;
+}
+
+/* Warning: yellow — noticeable but calm */
+#battery.warning:not(.charging):not(.plugged) {
+    color: @yellow;
+}
+
+/* Critical: red — clear without animation */
+#battery.critical:not(.charging):not(.plugged) {
+    color: @red;
+}
+
+/* ── Pulseaudio ──────────────────────────────────────────────── */
+#bluetooth.off,
+#bluetooth.disabled {
+    color: @overlay0;
+}
+
+#bluetooth.connected {
+    color: @blue;
+}
+
+#pulseaudio.muted {
+    color: @overlay0;
+}
+
+/* ── Tray ────────────────────────────────────────────────────── */
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+}
