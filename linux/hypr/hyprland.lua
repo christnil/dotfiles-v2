@@ -188,6 +188,16 @@ end
 local function master_msg(msg) -- run a master-layout command, no-op on dwindle workspaces
     return function() if is_master() then hl.dispatch(hl.dsp.layout(msg)) end end
 end
+local function flip_split() -- flip split (dwindle) / flip big window side (master)
+    if is_master() then hl.dispatch(hl.dsp.layout("orientationcycle left right"))
+    else hl.dispatch(hl.dsp.layout("togglesplit")) end
+end
+local function toggle_agents() -- show/hide agents (herdr), starting Herdr first if it isn't running
+    if #hl.get_windows({ class = "herdr" }) == 0 then
+        hl.exec_cmd("kitty --class herdr -e herdr")
+    end
+    hl.dispatch(hl.dsp.workspace.toggle_special("agents"))
+end
 -- Every bind has a trailing comment: SUPER+K (hypr-keys) shows them as a cheat sheet.
 
 -- Apps
@@ -221,10 +231,7 @@ hl.bind(mainMod .. " + SHIFT + Print", hl.dsp.exec_cmd("hyprshot -m window -o $H
 hl.bind(mainMod .. " + C", hl.dsp.window.close())                                   -- close window
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))              -- toggle floating
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())                                  -- pseudo-tile (dwindle)
-hl.bind(mainMod .. " + T", function() -- flip split (dwindle) / flip big window side (master)
-    if is_master() then hl.dispatch(hl.dsp.layout("orientationcycle left right"))
-    else hl.dispatch(hl.dsp.layout("togglesplit")) end
-end)
+hl.bind(mainMod .. " + T", flip_split) -- flip split (dwindle) / flip big window side (master)
 hl.bind(mainMod .. " + F",         hl.dsp.window.fullscreen({ mode = "fullscreen" })) -- fullscreen (hides bar)
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen({ mode = "maximized" }))  -- maximize (keeps bar)
 
@@ -307,12 +314,37 @@ hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"))    
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" })) -- move window to scratchpad
 
 -- Agents scratchpad: Herdr in kitty. Super+A shows/hides it, starting Herdr first if it isn't running.
-hl.bind(mainMod .. " + A", function() -- show/hide agents (herdr)
-    if #hl.get_windows({ class = "herdr" }) == 0 then
-        hl.exec_cmd("kitty --class herdr -e herdr")
-    end
-    hl.dispatch(hl.dsp.workspace.toggle_special("agents"))
-end)
+hl.bind(mainMod .. " + A", toggle_agents) -- show/hide agents (herdr)
+
+-- Ferris Sweep WM layer (hold the Tab thumb, qmk keymap christnil3). Each key sends
+-- MEH (Ctrl+Alt+Shift) or HYPR (MEH+Super) + a key; Aerospace on the Mac binds the same combos.
+-- MEH = go / focus / act, HYPR = move. On a laptop keyboard keep using the SUPER binds above.
+local meh = "CTRL + ALT + SHIFT"
+local hyper = "CTRL + ALT + SHIFT + SUPER"
+for key = 1, 5 do
+    hl.bind(meh .. " + " .. key,   hl.dsp.focus({ workspace = key }))       -- (Sweep) go to workspace 1-5
+    hl.bind(hyper .. " + " .. key, hl.dsp.window.move({ workspace = key })) -- (Sweep) move window to workspace 1-5
+end
+hl.bind(meh .. " + left",    hl.dsp.focus({ direction = "left" }))       -- (Sweep) focus left
+hl.bind(meh .. " + right",   hl.dsp.focus({ direction = "right" }))      -- (Sweep) focus right
+hl.bind(meh .. " + up",      hl.dsp.focus({ direction = "up" }))         -- (Sweep) focus up
+hl.bind(meh .. " + down",    hl.dsp.focus({ direction = "down" }))       -- (Sweep) focus down
+hl.bind(hyper .. " + left",  hl.dsp.window.move({ direction = "l" }))    -- (Sweep) move window left
+hl.bind(hyper .. " + right", hl.dsp.window.move({ direction = "r" }))    -- (Sweep) move window right
+hl.bind(hyper .. " + up",    hl.dsp.window.move({ direction = "u" }))    -- (Sweep) move window up
+hl.bind(hyper .. " + down",  hl.dsp.window.move({ direction = "d" }))    -- (Sweep) move window down
+hl.bind(meh .. " + Tab",     hl.dsp.focus({ workspace = "previous" }))   -- (Sweep) back to previous workspace
+hl.bind(meh .. " + Return",  master_msg("swapwithmaster"))               -- (Sweep) promote to the big spot (master)
+hl.bind(meh .. " + period",  master_msg("rollnext"))                     -- (Sweep) rotate next (master)
+hl.bind(meh .. " + comma",   master_msg("rollprev"))                     -- (Sweep) rotate previous (master)
+hl.bind(meh .. " + slash",   hl.dsp.exec_cmd("hypr-keys"))               -- (Sweep) cheat sheet
+hl.bind(meh .. " + S",       hl.dsp.workspace.toggle_special("magic"))   -- (Sweep) show/hide scratchpad
+hl.bind(meh .. " + A",       toggle_agents)                              -- (Sweep) show/hide agents (herdr)
+hl.bind(hyper .. " + C",     hl.dsp.window.close())                      -- (Sweep) close window
+hl.bind(meh .. " + V",       hl.dsp.window.float({ action = "toggle" })) -- (Sweep) toggle floating
+hl.bind(meh .. " + Z",       hl.dsp.window.fullscreen({ mode = "fullscreen" })) -- (Sweep) fullscreen / zen
+hl.bind(meh .. " + T",       flip_split)                                 -- (Sweep) flip split / big window side
+hl.bind(meh .. " + G",       hl.dsp.group.toggle())                      -- (Sweep) make/unmake a tab group
 
 hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" })) -- next workspace
 hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" })) -- previous workspace

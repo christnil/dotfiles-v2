@@ -6,7 +6,7 @@ path = os.path.expanduser("~/.config/hypr/hyprland.lua")
 src = open(path).read().splitlines()
 
 consts = dict(re.findall(r'^local\s+(\w+)\s*=\s*"([^"]*)"', "\n".join(src), re.M))
-NICE = {"mouse:272": "LMB drag", "mouse:273": "RMB drag", "mouse_down": "scroll down", "mouse_up": "scroll up"}
+NICE = {"CTRL + ALT + SHIFT + SUPER": "HYPR", "CTRL + ALT + SHIFT": "MEH", "mouse:272": "LMB drag", "mouse:273": "RMB drag", "mouse_down": "scroll down", "mouse_up": "scroll up"}
 
 def key_expr(expr):
     parts = []

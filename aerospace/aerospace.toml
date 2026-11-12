@@ -80,6 +80,36 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
     ctrl-alt-shift-cmd-p = 'move-node-to-workspace 4'
     ctrl-alt-shift-cmd-b = 'move-node-to-workspace 5'
 
+    alt-tab = 'workspace-back-and-forth' # like SUPER+Tab in Hyprland
+
+    # Ferris Sweep WM layer (hold the Tab thumb, qmk keymap christnil3). Same combos as the
+    # Hyprland "(Sweep)" binds. MEH = ctrl-alt-shift (go/focus/act), HYPR = ctrl-alt-shift-cmd (move).
+    # Promote/rotate/scratchpad/agents/cheat sheet have no Aerospace equivalent and stay unbound.
+    ctrl-alt-shift-1 = 'workspace 1'
+    ctrl-alt-shift-2 = 'workspace 2'
+    ctrl-alt-shift-3 = 'workspace 3'
+    ctrl-alt-shift-4 = 'workspace 4'
+    ctrl-alt-shift-5 = 'workspace 5'
+    ctrl-alt-shift-cmd-1 = 'move-node-to-workspace 1'
+    ctrl-alt-shift-cmd-2 = 'move-node-to-workspace 2'
+    ctrl-alt-shift-cmd-3 = 'move-node-to-workspace 3'
+    ctrl-alt-shift-cmd-4 = 'move-node-to-workspace 4'
+    ctrl-alt-shift-cmd-5 = 'move-node-to-workspace 5'
+    ctrl-alt-shift-left = 'focus --boundaries-action wrap-around-the-workspace left'
+    ctrl-alt-shift-down = 'focus --boundaries-action wrap-around-the-workspace down'
+    ctrl-alt-shift-up = 'focus --boundaries-action wrap-around-the-workspace up'
+    ctrl-alt-shift-right = 'focus --boundaries-action wrap-around-the-workspace right'
+    ctrl-alt-shift-cmd-left = 'move left'
+    ctrl-alt-shift-cmd-down = 'move down'
+    ctrl-alt-shift-cmd-up = 'move up'
+    ctrl-alt-shift-cmd-right = 'move right'
+    ctrl-alt-shift-tab = 'workspace-back-and-forth'
+    ctrl-alt-shift-cmd-c = 'close'
+    ctrl-alt-shift-v = 'layout floating tiling'
+    ctrl-alt-shift-z = 'fullscreen'
+    ctrl-alt-shift-t = 'layout tiles horizontal vertical'
+    ctrl-alt-shift-g = 'layout accordion tiles'
+
     alt-shift-c = 'reload-config'
 
     alt-shift-r = 'mode resize'
